@@ -104,7 +104,7 @@ class SocketPort(BaseIOPort):
                 byte = self._rfile.read(1)
             except socket.error as err:
                 raise IOError(err.args[1])
-            if byte == '':
+            if byte == b'':
                 # The other end has disconnected.
                 self.close()
                 break
