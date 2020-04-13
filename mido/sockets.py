@@ -1,17 +1,17 @@
 """
 MIDI over TCP/IP.
 """
-import socket
 import select
+import socket
+
 from .parser import Parser
 from .ports import MultiPort, BaseIOPort
 from .py2 import PY2
 
 
-def _is_readable(socket):
+def _is_readable(socket, timeout=0):
     """Return True if there is data to be read on the socket."""
 
-    timeout = 0
     (rlist, wlist, elist) = select.select(
         [socket.fileno()], [], [], timeout)
 
@@ -99,7 +99,7 @@ class SocketPort(BaseIOPort):
         return 'socket'
 
     def _receive(self, block=True):
-        while _is_readable(self._socket):
+        while _is_readable(self._socket, 1 if block else 0):
             try:
                 byte = self._rfile.read(1)
             except socket.error as err:
